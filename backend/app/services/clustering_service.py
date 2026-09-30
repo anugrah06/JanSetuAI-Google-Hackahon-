@@ -25,8 +25,8 @@ async def cluster_and_calculate_hotspots(db: AsyncSession) -> int:
     computes deterministic 5-factor priority scores,
     generates explainability reports, and saves them to the database.
     """
-    # 1. Fetch all citizen feedback
-    result = await db.execute(select(CitizenFeedback))
+    # 1. Fetch all citizen feedback in deterministic order
+    result = await db.execute(select(CitizenFeedback).order_by(CitizenFeedback.id))
     feedbacks = result.scalars().all()
     if not feedbacks:
         return 0
@@ -51,7 +51,10 @@ async def cluster_and_calculate_hotspots(db: AsyncSession) -> int:
     await db.execute(delete(Hotspot))
 
     created_count = 0
-    for (dist, taluka, cat), items in clusters.items():
+    import uuid
+    # Sort clusters deterministically by (district, taluka, category)
+    sorted_clusters = sorted(clusters.items(), key=lambda x: (x[0][0], x[0][1], x[0][2]))
+    for (dist, taluka, cat), items in sorted_clusters:
         count = len(items)
         avg_sev = sum(item.severity_score for item in items) / count
         
@@ -147,7 +150,10 @@ async def cluster_and_calculate_hotspots(db: AsyncSession) -> int:
             evidence_samples=evidence_samples
         )
 
+        hotspot_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, f"{dist}_{taluka}_{cat}"))
+
         hotspot = Hotspot(
+            id=hotspot_id,
             category=cat,
             state="Maharashtra",
             district=dist,

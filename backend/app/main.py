@@ -26,31 +26,44 @@ async def lifespan(app: FastAPI):
         res = await db.execute(select(func.count(DistrictInfrastructureBaseline.id)))
         count = res.scalar() or 0
         if count == 0:
-            logger.info("Database is empty. Auto-seeding realistic district baselines and synthetic demo complaints...")
-            base_dir = os.path.dirname(os.path.abspath(__file__))
-            data_dir = os.path.join(base_dir, "..", "data")
-            
-            # Seed baselines
-            b_path = os.path.join(data_dir, "district_baselines.json")
-            if os.path.exists(b_path):
-                with open(b_path, "r", encoding="utf-8") as f:
-                    b_data = json.load(f)
-                for item in b_data:
-                    db.add(DistrictInfrastructureBaseline(**item))
-                await db.commit()
-                
-            # Seed synthetic complaints
-            c_path = os.path.join(data_dir, "synthetic_complaints.json")
-            if os.path.exists(c_path):
-                with open(c_path, "r", encoding="utf-8") as f:
-                    c_data = json.load(f)
-                for item in c_data:
-                    db.add(CitizenFeedback(**item))
-                await db.commit()
-                
-            # Compute initial hotspots
-            h_count = await cluster_and_calculate_hotspots(db)
-            logger.info(f"Auto-seed completed. {len(b_data)} districts, {len(c_data)} complaints, {h_count} hotspots generated.")
+            logger.info("Database is empty. Running deterministic demo auto-seed...")
+            from app.api.v1.admin import execute_deterministic_seed
+            result = await execute_deterministic_seed(db)
+            logger.info(f"Auto-seed completed: {result['districts_loaded']} districts, {result['synthetic_complaints_loaded']} complaints, {result['hotspots_generated']} hotspots.")
+
+        # Ensure default development admin and citizen accounts exist with secure password hashes
+        from app.models.user import User
+        from app.core.security import get_password_hash
+
+        # 1. Admin Account
+        admin_res = await db.execute(select(User).where(User.email == settings.ADMIN_EMAIL))
+        if not admin_res.scalar_one_or_none():
+            admin_user = User(
+                email=settings.ADMIN_EMAIL,
+                username="admin",
+                full_name="Government Administrator",
+                password_hash=get_password_hash(settings.ADMIN_PASSWORD),
+                role="GOVERNMENT_ADMIN",
+                is_active=True
+            )
+            db.add(admin_user)
+            logger.info(f"Created default development admin user ({settings.ADMIN_EMAIL})")
+
+        # 2. Citizen Account
+        citizen_res = await db.execute(select(User).where(User.email == settings.CITIZEN_EMAIL))
+        if not citizen_res.scalar_one_or_none():
+            citizen_user = User(
+                email=settings.CITIZEN_EMAIL,
+                username="citizen",
+                full_name="Ramesh Pawar (Citizen)",
+                password_hash=get_password_hash(settings.CITIZEN_PASSWORD),
+                role="CITIZEN",
+                is_active=True
+            )
+            db.add(citizen_user)
+            logger.info(f"Created default development citizen user ({settings.CITIZEN_EMAIL})")
+
+        await db.commit()
             
     yield
     logger.info("Shutting down JanSetu backend...")

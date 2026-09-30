@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "@/components/common/Providers";
 
 export const metadata: Metadata = {
   title: "JanSetu AI — Multilingual Citizen Civic Intelligence & Priority System",
@@ -12,9 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen bg-slate-950 text-slate-100 antialiased">
-        {children}
+    <html lang="en">
+      <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

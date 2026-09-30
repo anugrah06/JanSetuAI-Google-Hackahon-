@@ -11,7 +11,7 @@ class CitizenFeedback(Base):
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    language = Column(String(10), nullable=False) # 'hi', 'mr', 'en'
+    language = Column(String(10), nullable=False) # 'hi', 'en'
     input_mode = Column(String(10), nullable=False) # 'voice', 'text'
     raw_input = Column(Text, nullable=False)
     audio_file_path = Column(String(255), nullable=True)
@@ -29,6 +29,6 @@ class CitizenFeedback(Base):
     urgency = Column(String(20), nullable=False, default="MEDIUM") # LOW, MEDIUM, HIGH, CRITICAL
     affected_group = Column(String(150), nullable=True)
 
-    # Synthetic demo guardrail
-    is_synthetic = Column(Boolean, default=True, nullable=False)
+    # Synthetic demo guardrail (False for real user grievances, True for seeded demo data)
+    is_synthetic = Column(Boolean, default=False, nullable=False)
     demo_scenario_id = Column(String(50), nullable=True)

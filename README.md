@@ -1,14 +1,14 @@
 # JanSetu AI (जनसेतू AI)
 > **Multilingual Citizen Voice-to-Needs Civic Intelligence & Infrastructure Prioritization Engine**
 
-JanSetu AI is a hackathon prototype that converts multilingual citizen voice and text grievances (in **Marathi**, **Hindi**, and **English**) into structured development needs and produces **100% transparent, explainable infrastructure priorities** for public administration.
+JanSetu AI is a hackathon prototype that converts multilingual citizen voice and text grievances (in **Hindi** and **English**) into structured development needs and produces **100% transparent, explainable infrastructure priorities** for public administration.
 
 ---
 
 ## 🌟 Key Architecture & Highlights
 
 ### 1. Citizen Multilingual Grievance Portal
-* **Language Support**: Marathi (मराठी), Hindi (हिंदी), and Indian English.
+* **Language Support**: Hindi (हिंदी) and Indian English.
 * **Dual Input Modes**:
   * **Voice Complaint Input**: In-browser Web Audio `MediaRecorder` with real-time waveform visualizer and direct Gemini multimodal audio processing.
   * **Text Complaint Input**: Form with character count and one-click real-world crisis demo prompts.
@@ -38,7 +38,7 @@ $$\text{Priority Score} = 0.35 \times S_{\text{demand}} + 0.25 \times S_{\text{i
   4. *Peri-Urban Drainage & Uncollected Waste* (Pune)
 * **Explainability Inspector**: Deep-dive card displaying:
   * Full mathematical equation and point breakdown
-  * Ground citizen quotes in original Marathi, Hindi, and English
+  * Ground citizen quotes in original Hindi and English
   * Official district baseline stats
   * Gemini executive briefing
   * 3-phase administrative operational plan with assigned agencies and timelines.
@@ -97,6 +97,52 @@ Expected output: `PRIORITY MATH VERIFICATION PASSED`
 
 ---
 
+---
+
+## 🔐 Authentication & Data Storage
+
+JanSetu AI implements a dual login architecture with server-side role-based access control (RBAC):
+
+### 1. Two Separate Login Experiences
+* **Citizen Login (`/login/citizen`)**: Accessible to the general public to submit voice/text grievances, view tracking status, and participate in civic feedback. Citizens cannot access government intelligence dashboards.
+* **Government / Admin Login (`/login/admin`)**: Restricted portal for authorized administrative officers and engineers to inspect district deficits, review priority hotspots, and action plan briefs.
+
+### 2. Explicit Storage Answers
+* **Where is authentication data stored?**  
+  Authentication data is stored in the local SQLite database at `backend/jansetu.db` inside the **`users`** table.  
+  Schema includes: `id`, `email`, `username`, `full_name`, `password_hash`, `role`, `is_active`, `created_at`, `updated_at`.
+* **Where is authorization data stored?**  
+  Authorization roles are stored server-side in `backend/jansetu.db` inside the **`users.role`** column (`CITIZEN` vs `GOVERNMENT_ADMIN`).  
+  All role enforcement is verified on the backend by FastAPI dependency injection (`require_government_admin`), returning `401 Unauthorized` for missing credentials and `403 Forbidden` for unauthorized roles.
+
+### 3. Security & Hashing Standards
+* **Password Hashing**: Passwords are **NEVER stored in plaintext** or returned by any API. Passwords are cryptographically salted and hashed using industry-standard `pbkdf2_sha256` / `bcrypt` via Passlib.
+* **Session & Token Storage**: Signed JSON Web Tokens (JWT) are generated on successful authentication and transmitted in secure `HttpOnly` cookies (`jansetu_token`, `SameSite=Lax`) and optional `Authorization: Bearer` headers. Sensitive credentials and plaintext passwords are never placed in browser `localStorage`.
+* **Logout Behavior**: Calling `POST /api/v1/auth/logout` clears the `HttpOnly` session cookie and invalidates client session state.
+
+### 4. Protected APIs
+* `GET /api/v1/gov/stats` (Requires `GOVERNMENT_ADMIN`, returns 401 unauthenticated, 403 citizen)
+* `GET /api/v1/gov/hotspots` (Requires `GOVERNMENT_ADMIN`, returns 401 unauthenticated, 403 citizen)
+* `GET /api/v1/gov/hotspots/{id}` (Requires `GOVERNMENT_ADMIN`, returns 401 unauthenticated, 403 citizen)
+* `POST /api/v1/gov/recalculate` (Requires `GOVERNMENT_ADMIN`, returns 401 unauthenticated, 403 citizen)
+* `GET /api/v1/admin/demo-hotspots` (Public demonstration endpoint for Hackathon Demo Mode)
+* `GET /api/v1/admin/scenarios` (Public demonstration endpoint for Hackathon Demo Mode)
+* `POST /api/v1/citizen/submit-text` & `POST /api/v1/citizen/submit-voice` (Open for civic reporting)
+
+### 5. Development & Demo Account Setup
+Development credentials can be configured in `backend/.env`:
+```ini
+ADMIN_EMAIL=admin@jansetu.gov.in
+ADMIN_PASSWORD=Admin@JanSetu2026!
+CITIZEN_EMAIL=citizen@jansetu.in
+CITIZEN_PASSWORD=Citizen@JanSetu2026!
+SECRET_KEY=jansetu-civic-secret-key-change-in-prod-2026
+```
+*(On initial startup, JanSetu AI automatically seeds these two development accounts if they do not already exist, enabling instant evaluation by hackathon judges).*
+
+---
+
 ## 📜 Ethical & Governance Disclaimer
+JanSetu AI is an assistive civic intelligence research prototype. All grievance scenarios, citizen identities, and telephone transcripts in the demonstration mode are synthetic test benchmarks designed to model governance prioritization algorithms. Final statutory budget allocations and civic work authorizations remain the sole prerogative of competent municipal and state authorities.
 **JanSetu AI is a decision-support and assistive prioritization prototype for civic governance.**
 All citizen records displayed in this demonstration are synthetic scenarios created for civic technology research and evaluation. The system does not execute automated statutory decisions.

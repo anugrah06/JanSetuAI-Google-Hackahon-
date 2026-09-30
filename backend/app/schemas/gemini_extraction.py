@@ -18,6 +18,6 @@ class CitizenFeedbackExtraction(BaseModel):
     severity_score: int = Field(default=3, ge=1, le=5, description="1=Minor inconvenience, 3=Disrupts daily routine/services, 5=Life-threatening emergency or major hazard")
     urgency: Literal["LOW", "MEDIUM", "HIGH", "CRITICAL"] = Field(default="MEDIUM", description="Urgency level based on time constraints and immediate hazard")
     affected_group: Optional[str] = Field(default="Local residents", description="Demographic group impacted (e.g. school children, farmers, hospital patients, daily commuters)")
-    original_language: Literal["hi", "mr", "en", "mixed"] = Field(default="mixed", description="Detected language of input")
+    original_language: Literal["hi", "en", "mixed"] = Field(default="mixed", description="Detected language of input")
     latitude: Optional[float] = Field(default=None, description="Inferred or geocoded latitude if identifiable")
     longitude: Optional[float] = Field(default=None, description="Inferred or geocoded longitude if identifiable")

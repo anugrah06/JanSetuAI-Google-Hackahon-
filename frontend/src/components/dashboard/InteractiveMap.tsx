@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { HotspotSummary, Language } from "@/types";
-import { categoryLabels } from "@/lib/translations";
+import { translations, categoryLabels } from "@/lib/translations";
 import { Droplet, Truck, Zap, HeartPulse, GraduationCap, Building2, Flame, MapPin } from "lucide-react";
 
 interface InteractiveMapProps {
@@ -43,6 +43,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   onSelectHotspot,
   currentLang,
 }) => {
+  const t = translations[currentLang];
   const [hoveredHotspot, setHoveredHotspot] = useState<HotspotSummary | null>(null);
 
   const getCategoryIcon = (cat: string) => {
@@ -63,24 +64,24 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   };
 
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 p-4 shadow-2xl">
+    <div className="relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
       {/* Map Header Overlay */}
-      <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2 rounded-xl bg-slate-900/90 p-2.5 border border-slate-800 backdrop-blur-md shadow-lg text-xs">
-        <div className="flex items-center gap-1.5 text-amber-400 font-bold">
-          <MapPin className="h-3.5 w-3.5 text-orange-500" />
+      <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2 rounded-xl bg-white/95 p-2.5 border border-slate-200 shadow-xs text-xs">
+        <div className="flex items-center gap-1.5 text-slate-900 font-bold">
+          <MapPin className="h-3.5 w-3.5 text-indigo-600" />
           <span>Maharashtra Civic Demand Hotspots</span>
         </div>
-        <div className="hidden sm:flex items-center gap-3 border-l border-slate-700 pl-3">
-          <span className="flex items-center gap-1 text-[11px] text-red-400">
-            <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+        <div className="hidden sm:flex items-center gap-2.5 border-l border-slate-200 pl-2.5">
+          <span className="flex items-center gap-1 text-[11px] text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full font-medium">
+            <span className="h-2 w-2 rounded-full bg-red-600" />
             Critical (&ge;70)
           </span>
-          <span className="flex items-center gap-1 text-[11px] text-amber-400">
-            <span className="h-2 w-2 rounded-full bg-amber-500" />
+          <span className="flex items-center gap-1 text-[11px] text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
+            <span className="h-2 w-2 rounded-full bg-amber-600" />
             High (50-69)
           </span>
-          <span className="flex items-center gap-1 text-[11px] text-emerald-400">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <span className="flex items-center gap-1 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-medium">
+            <span className="h-2 w-2 rounded-full bg-emerald-600" />
             Moderate (&lt;50)
           </span>
         </div>
@@ -95,13 +96,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <defs>
           {/* Subtle grid pattern */}
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" strokeWidth="0.5" strokeOpacity="0.4" />
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" strokeWidth="0.5" strokeOpacity="0.8" />
           </pattern>
-          {/* Radial glow for critical pins */}
-          <radialGradient id="criticalGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ef4444" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#ef4444" stopOpacity="0" />
-          </radialGradient>
         </defs>
 
         {/* Background Grid */}
@@ -110,24 +106,22 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         {/* Stylized Maharashtra Boundary Silhouette */}
         <path
           d="M 120 180 C 180 120, 320 80, 480 90 C 580 95, 750 140, 840 220 C 870 290, 860 400, 780 480 C 720 530, 580 580, 440 590 C 320 600, 220 560, 160 520 C 130 460, 110 380, 100 300 Z"
-          fill="#0f172a"
-          stroke="#334155"
+          fill="#f8fafc"
+          stroke="#cbd5e1"
           strokeWidth="2"
-          strokeDasharray="4 4"
-          opacity="0.6"
         />
 
         {/* District Baseline Nodes and Names */}
         {Object.entries(DISTRICT_CENTERS).map(([distName, [lat, lng]]) => {
           const [cx, cy] = project(lat, lng);
           return (
-            <g key={distName} className="opacity-70">
-              <circle cx={cx} cy={cy} r="3" fill="#64748b" />
+            <g key={distName} className="opacity-90">
+              <circle cx={cx} cy={cy} r="3.5" fill="#94a3b8" />
               <text
                 x={cx}
                 y={cy + 15}
                 textAnchor="middle"
-                className="fill-slate-400 font-sans text-[11px] font-semibold tracking-wider"
+                className="fill-slate-600 font-sans text-[11px] font-semibold tracking-wider"
               >
                 {distName}
               </text>
@@ -135,16 +129,16 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           );
         })}
 
-        {/* Hotspots with Concentric Pulsing Radar Rings */}
+        {/* Hotspots with Concentric Radar Rings */}
         {hotspots.map((h) => {
           const [cx, cy] = project(h.center_lat, h.center_lng);
           const isSelected = selectedHotspotId === h.id;
           const isCritical = h.final_priority_score >= 70.0;
           const isHigh = h.final_priority_score >= 50.0 && h.final_priority_score < 70.0;
 
-          const ringColor = isCritical ? "#ef4444" : isHigh ? "#f59e0b" : "#10b981";
-          const badgeBg = isCritical ? "fill-red-950" : isHigh ? "fill-amber-950" : "fill-emerald-950";
-          const strokeColor = isCritical ? "stroke-red-500" : isHigh ? "stroke-amber-500" : "stroke-emerald-500";
+          const ringColor = isCritical ? "#dc2626" : isHigh ? "#d97706" : "#059669";
+          const badgeBg = isCritical ? "fill-red-600" : isHigh ? "fill-amber-600" : "fill-emerald-600";
+          const strokeColor = isCritical ? "stroke-red-700" : isHigh ? "stroke-amber-700" : "stroke-emerald-700";
 
           return (
             <g
@@ -152,41 +146,39 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
               onClick={() => onSelectHotspot(h)}
               onMouseEnter={() => setHoveredHotspot(h)}
               onMouseLeave={() => setHoveredHotspot(null)}
-              className="cursor-pointer transition-transform hover:scale-110"
+              className="cursor-pointer transition-transform hover:scale-108"
               style={{ transformOrigin: `${cx}px ${cy}px` }}
             >
-              {/* Outer Pulsing Wave for High/Critical Priority */}
+              {/* Outer Radar Wave */}
               <circle
                 cx={cx}
                 cy={cy}
-                r={isSelected ? 36 : 28}
+                r={isSelected ? 34 : 26}
                 fill="none"
                 stroke={ringColor}
                 strokeWidth={isSelected ? 2 : 1}
                 strokeOpacity={isSelected ? 0.8 : 0.3}
-                className={isCritical ? "animate-ping" : ""}
-                style={{ animationDuration: "3s" }}
               />
 
-              {/* Inner Soft Gradient Glow */}
+              {/* Inner Soft Gradient Ring */}
               <circle
                 cx={cx}
                 cy={cy}
-                r={isSelected ? 26 : 20}
+                r={isSelected ? 24 : 18}
                 fill={ringColor}
-                fillOpacity={isSelected ? 0.25 : 0.12}
+                fillOpacity={isSelected ? 0.2 : 0.1}
               />
 
               {/* Central Marker Badge */}
               <circle
                 cx={cx}
                 cy={cy}
-                r={isSelected ? 16 : 13}
+                r={isSelected ? 15 : 12}
                 className={`${badgeBg} ${strokeColor}`}
-                strokeWidth={isSelected ? "3" : "2"}
+                strokeWidth={isSelected ? "2.5" : "1.5"}
               />
 
-              {/* Score / Counter Text */}
+              {/* Score Text */}
               <text
                 x={cx}
                 y={cy + 4}
@@ -203,27 +195,30 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       {/* Hover Floating Tooltip */}
       {hoveredHotspot && (
         <div
-          className="pointer-events-none absolute bottom-4 right-4 z-20 max-w-sm rounded-xl border border-slate-700 bg-slate-900/95 p-3.5 shadow-2xl backdrop-blur-md"
+          className="pointer-events-none absolute bottom-4 right-4 z-20 max-w-sm rounded-xl border border-slate-200 bg-white p-3.5 shadow-lg"
         >
-          <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-2 mb-2">
-            <span className="text-xs font-bold text-white">
+          <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2 mb-2">
+            <span className="text-xs font-bold text-slate-900">
               {hoveredHotspot.taluka_or_ward ? `${hoveredHotspot.taluka_or_ward}, ` : ""}
               {hoveredHotspot.district}
             </span>
-            <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
+            <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold border ${
               hoveredHotspot.final_priority_score >= 70
-                ? "bg-red-500/20 text-red-400 border border-red-500/40"
-                : "bg-amber-500/20 text-amber-400 border border-amber-500/40"
+                ? "bg-red-50 text-red-700 border-red-200"
+                : "bg-amber-50 text-amber-800 border-amber-200"
             }`}>
               Score: {hoveredHotspot.final_priority_score}/100
             </span>
           </div>
-          <p className="text-xs font-medium text-slate-300 line-clamp-2">
+          <p className="text-xs font-medium text-slate-700 line-clamp-2">
             {hoveredHotspot.detected_headline}
           </p>
-          <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+          <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
             <span>{categoryLabels[hoveredHotspot.category]?.[currentLang] || hoveredHotspot.category}</span>
-            <span className="font-semibold text-orange-400">{hoveredHotspot.complaint_count} Complaints</span>
+            <span className="font-semibold text-indigo-700">{hoveredHotspot.complaint_count} Complaints</span>
+          </div>
+          <div className="mt-1 pt-1 border-t border-slate-100 text-[10px] text-slate-400 font-mono">
+            {t.calcByEngine}
           </div>
         </div>
       )}

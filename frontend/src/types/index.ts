@@ -1,4 +1,4 @@
-export type Language = 'en' | 'hi' | 'mr';
+export type Language = 'en' | 'hi';
 
 export type Category = 
   | 'WATER_AND_SANITATION'
@@ -105,4 +105,26 @@ export interface ScenarioInfo {
   description: string;
   languages: string[];
   expected_priority: string;
+  civic_problem?: string;
+  synthetic_complaints_count?: number;
+  resulting_hotspot?: string;
+  priority_score?: number;
+}
+
+export interface DemoComplaint {
+  id: string;
+  language: Language;
+  input_mode: string;
+  raw_input: string;
+  category: Category;
+  sub_issue: string;
+  state: string;
+  district: string;
+  taluka_or_ward?: string;
+  landmark?: string;
+  severity_score: number;
+  urgency: string;
+  affected_group?: string;
+  is_synthetic: boolean;
+  demo_scenario_id?: string;
 }

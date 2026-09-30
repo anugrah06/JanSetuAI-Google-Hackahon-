@@ -19,7 +19,7 @@ async def submit_text_feedback(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Submits citizen text feedback in Hindi, Marathi, or English.
+    Submits citizen text feedback in Hindi or English.
     Google Gemini extracts structured civic categories, location, severity, and urgency.
     """
     if not payload.text or len(payload.text.strip()) < 5:
@@ -29,7 +29,7 @@ async def submit_text_feedback(
     extraction = await extract_feedback_entities(payload.text, payload.language)
     
     feedback = CitizenFeedback(
-        language=extraction.original_language or payload.language or "mr",
+        language=extraction.original_language or payload.language or "en",
         input_mode="text",
         raw_input=payload.text.strip(),
         category=extraction.category,
@@ -43,8 +43,8 @@ async def submit_text_feedback(
         severity_score=extraction.severity_score,
         urgency=extraction.urgency,
         affected_group=extraction.affected_group,
-        is_synthetic=True, # Label demo submissions clearly
-        demo_scenario_id="live_demo_submission"
+        is_synthetic=False,
+        demo_scenario_id=None
     )
     
     db.add(feedback)
@@ -79,11 +79,11 @@ async def submit_text_feedback(
 @router.post("/submit-voice", response_model=CitizenFeedbackResponse)
 async def submit_voice_feedback(
     audio: UploadFile = File(...),
-    language_hint: Optional[str] = Form("mr"),
+    language_hint: Optional[str] = Form("en"),
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Accepts recorded voice audio (WebM, WAV, MP3) in Hindi, Marathi, or English.
+    Accepts recorded voice audio (WebM, WAV, MP3) in Hindi or English.
     Transcribes voice and uses Gemini to extract structured civic priorities.
     """
     audio_bytes = await audio.read()
@@ -111,8 +111,8 @@ async def submit_voice_feedback(
         severity_score=extraction.severity_score,
         urgency=extraction.urgency,
         affected_group=extraction.affected_group,
-        is_synthetic=True,
-        demo_scenario_id="live_voice_submission"
+        is_synthetic=False,
+        demo_scenario_id=None
     )
     
     db.add(feedback)

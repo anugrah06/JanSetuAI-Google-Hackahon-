@@ -1,6 +1,6 @@
 import { Language } from "@/types";
 
-export const translations = {
+export const translations: Record<Language, any> = {
   en: {
     appTitle: "JanSetu AI",
     tagline: "Multilingual Citizen Voice-to-Needs & Infrastructure Priority System",
@@ -10,7 +10,7 @@ export const translations = {
     selectLanguage: "Language",
     voiceInput: "Voice Complaint",
     textInput: "Text Complaint",
-    voiceRecordPrompt: "Click to speak your problem in Marathi, Hindi, or English",
+    voiceRecordPrompt: "Click to speak your problem in Hindi or English",
     recording: "Recording in progress... Speak clearly",
     stopRecording: "Stop Recording",
     processing: "Gemini AI is analyzing your complaint...",
@@ -42,7 +42,46 @@ export const translations = {
     recalculate: "Recalculate Priorities",
     recalculating: "Clustering & Computing...",
     viewDetails: "Inspect Breakdown & Evidence",
-    close: "Close Inspector"
+    close: "Close Inspector",
+    firstTimeGuide: "Report a civic problem in English or Hindi.",
+    structuredTransition: "Complaint structured successfully",
+    signalAdded: "Signal added to civic intelligence",
+    topPriorityLocation: "Top Priority Location",
+    topAffectedSector: "Top Affected Sector",
+    topHotspotBadge: "TOP PRIORITY HOTSPOT",
+    aiExtractedInfo: "AI-Extracted Information",
+    aiExtractionSubtext: "Structured entities identified from citizen voice/text by AI comprehension model.",
+    deterministicPriorityCalc: "Deterministic Priority Calculation",
+    deterministicPrioritySubtext: "Numerical priority is computed separately by mathematical formula, not by AI.",
+    techTransparencyTitle: "AI-Assisted Extraction + Deterministic Scoring",
+    techTransparencyDesc: "Multilingual comprehension by AI • Numerical scoring & ranking strictly by deterministic formula (0% LLM score weighting)",
+    calcByEngine: "Calculated by deterministic scoring engine",
+    deterministicFactorBadge: "Deterministic Math & Official Data",
+    aiExecutiveBrief: "AI-Assisted Executive Brief",
+    aiBriefExplanation: "This executive brief is synthesized by AI to summarize citizen quotes and regional context for administrative convenience. It does not determine, influence, or alter the numerical priority score.",
+    aiSuggestedActions: "AI-Suggested Actions",
+    actionAuthorityNote: "Advisory Roadmap: These recommendations are advisory suggestions generated from civic operational playbooks. Designated administrative authorities retain sole statutory decision-making and sanctioning power.",
+    hackathonDemoTab: "Hackathon Demo Mode",
+    demoBadge: "Interactive Judge Walkthrough",
+    demoSubtitle: "Demonstrating JanSetu AI's end-to-end 5-step pipeline using deterministic synthetic scenarios.",
+    selectScenarioPrompt: "Select a Demonstration Scenario:",
+    resetDemoBtn: "Reset Demo Data",
+    resettingDemo: "Resetting...",
+    demoResetSuccess: "Demonstration data reset to clean deterministic state. Real citizen submissions preserved.",
+    step1Title: "STEP 1 — Citizen Signals",
+    step1Desc: "Multilingual raw complaints received via voice and text in English and Hindi.",
+    step2Title: "STEP 2 — AI Structured Extraction",
+    step2Desc: "Gemini language model converts unstructured citizen voice/text into structured civic entities.",
+    step3Title: "STEP 3 — Hotspot Formation",
+    step3Desc: "Multiple complaints converge spatially and categorically with district baseline deficits.",
+    step4Title: "STEP 4 — Deterministic Priority Calculation",
+    step4Desc: "Mathematical formula computes authoritative 0-100 score across 5 transparent factors.",
+    step5Title: "STEP 5 — Government Action & Brief",
+    step5Desc: "Executive dashboard explains why area was prioritized with AI-assisted action plan.",
+    nextStepBtn: "Next Step",
+    prevStepBtn: "Previous Step",
+    quickLaunchBtn: "Quick Launch Scenario",
+    syntheticDisclosure: "PROTOTYPE DEMONSTRATION: Demo uses synthetic citizen grievances and demonstration data. No real government work orders are issued."
   },
   hi: {
     appTitle: "जनसेतू AI",
@@ -53,7 +92,7 @@ export const translations = {
     selectLanguage: "भाषा",
     voiceInput: "आवाज से शिकायत",
     textInput: "लिखकर शिकायत",
-    voiceRecordPrompt: "मराठी, हिंदी या अंग्रेजी में अपनी समस्या बोलने के लिए क्लिक करें",
+    voiceRecordPrompt: "हिंदी या अंग्रेजी में अपनी समस्या बोलने के लिए क्लिक करें",
     recording: "रिकॉर्डिंग जारी है... कृपया बोलें",
     stopRecording: "रिकॉर्डिंग रोकें",
     processing: "जेमिनी एआई आपकी शिकायत का विश्लेषण कर रहा है...",
@@ -85,82 +124,73 @@ export const translations = {
     recalculate: "प्राथमिकता पुनः गणना करें",
     recalculating: "गणना जारी है...",
     viewDetails: "साक्ष्य व स्कोर विवरण देखें",
-    close: "बंद करें"
-  },
-  mr: {
-    appTitle: "जनसेतू AI",
-    tagline: "नागरिकांच्या आवाजातून पायाभूत सुविधांची पारदर्शक प्राधान्य प्रणाली",
-    portalCitizen: "नागरिक तक्रार निवारण कक्ष",
-    portalGov: "प्रशासकीय प्राधान्य डॅशबोर्ड",
-    demoDisclaimer: "प्रात्यक्षिक नमुना: सर्व नागरिकांच्या तक्रारी व हॉटस्पॉट्स केवळ संशोधनात्मक प्रात्यक्षिकासाठी तयार केलेले सिंथेटिक डेटा आहेत.",
-    selectLanguage: "भाषा",
-    voiceInput: "व्हॉइस द्वारे तक्रार",
-    textInput: "टाईप करून तक्रार",
-    voiceRecordPrompt: "मराठी, हिंदी किंवा इंग्रजीत तुमची समस्या सांगण्यासाठी क्लिक करा",
-    recording: "रेकॉर्डिंग सुरू आहे... कृपया बोला",
-    stopRecording: "रेकॉर्डिंग पूर्ण करा",
-    processing: "जेमिनी एआय तुमच्या तक्रारीचे वर्गीकरण करत आहे...",
-    submitComplaint: "तक्रार दाखल करा",
-    samplePromptsTitle: "किंवा प्रात्यक्षिकासाठी खालील उदाहरणे निवडा:",
-    ticketGenerated: "तक्रार यशस्वीरित्या नोंदवली गेली!",
-    ticketId: "नोंदणी क्रमांक (Ticket ID)",
-    detectedCategory: "तपासलेला विभाग",
-    detectedIssue: "विशिष्ट समस्या",
-    location: "ठिकाण",
-    severity: "तीव्रता पातळी",
-    urgency: "तातडीची गरज",
-    affectedDemographic: "बाधित घटक",
-    statusTrack: "प्राधान्यक्रम स्थिती",
-    kpiTotalGrievances: "एकूण नोंदवलेल्या तक्रारी",
-    kpiActiveHotspots: "सक्रिय समस्या हॉटस्पॉट्स",
-    kpiCriticalAction: "तातडीचे हस्तक्षेप क्षेत्र",
-    kpiDistricts: "समाविष्ट जिल्हे",
-    filterSector: "विभाग",
-    filterDistrict: "जिल्हा",
-    filterScore: "किमान प्राधान्य गुण",
-    allDistricts: "सर्व जिल्हे",
-    allSectors: "सर्व विभाग",
-    transparentBreakdown: "पारदर्शक ५-घटक गुण विभाजन (Score Formula)",
-    evidenceUsed: "नागरिकांचे प्रत्यक्ष पुरावे व नोंद",
-    geminiBrief: "जेमिनी प्रशासकीय सारांश",
-    actionPlan: "शिफारस केलेली कृती योजना",
-    scenarioPresets: "तयार प्रात्यक्षिक परिदृश्य (Scenarios)",
-    recalculate: "पुन्हा प्राधान्यक्रम मोजा",
-    recalculating: "विश्लेषण सुरू आहे...",
-    viewDetails: "सविस्तर पुरावे व सूत्र पहा",
-    close: "बंद करा"
+    close: "बंद करें",
+    firstTimeGuide: "हिंदी या अंग्रेजी में अपनी नागरिक समस्या दर्ज करें।",
+    structuredTransition: "शिकायत का सफल संरचनात्मक विश्लेषण",
+    signalAdded: "संकेत नागरिक सूचना प्रणाली में शामिल",
+    topPriorityLocation: "सर्वोच्च प्राथमिकता क्षेत्र",
+    topAffectedSector: "सर्वाधिक प्रभावित विभाग",
+    topHotspotBadge: "सर्वोच्च प्राथमिकता हॉटस्पॉट",
+    aiExtractedInfo: "एआई-निष्कर्षित जानकारी",
+    aiExtractionSubtext: "नागरिक आवाज/टेक्स्ट से एआई समझ मॉडल द्वारा निकाली गई संरचित जानकारी।",
+    deterministicPriorityCalc: "दृढ़ गणितीय प्राथमिकता गणना",
+    deterministicPrioritySubtext: "संख्यात्मक प्राथमिकता स्कोर एआई द्वारा नहीं, बल्कि गणितीय सूत्रों द्वारा अलग से तय होते हैं।",
+    techTransparencyTitle: "एआई-सहायक निष्कर्षण + दृढ़ गणितीय स्कोरिंग",
+    techTransparencyDesc: "एआई द्वारा बहुभाषी समझ • पूरी तरह से गणितीय सूत्रों पर आधारित स्कोरिंग और रैंकिंग (0% एलएलएम स्कोर हस्तक्षेप)",
+    calcByEngine: "दृढ़ गणितीय स्कोरिंग इंजन द्वारा परिकलित",
+    deterministicFactorBadge: "दृढ़ गणित एवं आधिकारिक डेटा",
+    aiExecutiveBrief: "एआई-सहायक प्रशासनिक सारांश",
+    aiBriefExplanation: "यह प्रशासनिक सारांश प्रशासनिक अधिकारियों की सुविधा के लिए नागरिक साक्ष्यों और क्षेत्रीय संदर्भ का संक्षेप प्रस्तुत करता है। यह संख्यात्मक स्कोर या प्राथमिकता तय नहीं करता है।",
+    aiSuggestedActions: "एआई-सुझावित कार्य योजना",
+    actionAuthorityNote: "परामर्श कार्ययोजना: ये सिफारिशें केवल सुझाव हैं। वैधानिक निर्णय और वित्तीय स्वीकृति का पूर्ण अधिकार संबंधित प्रशासनिक अधिकारियों के पास सुरक्षित है।",
+    hackathonDemoTab: "हैकथॉन डेमो मोड",
+    demoBadge: "इंटरैक्टिव जज वॉकथ्रू",
+    demoSubtitle: "दृढ़ सिंथेटिक परिदृश्यों का उपयोग करके जनसेतू AI की 5-चरणीय प्रक्रिया का इंटरैक्टिव प्रदर्शन।",
+    selectScenarioPrompt: "एक प्रदर्शन संकट परिदृश्य चुनें:",
+    resetDemoBtn: "डेमो डेटा रीसेट करें",
+    resettingDemo: "रीसेट जारी है...",
+    demoResetSuccess: "डेमो डेटा स्वच्छ स्थिति में रीसेट हो गया। वास्तविक नागरिक शिकायतें सुरक्षित हैं।",
+    step1Title: "चरण 1 — नागरिक आवाज एवं संकेत",
+    step1Desc: "अंग्रेजी और हिंदी में आवाज और टेक्स्ट के माध्यम से प्राप्त कच्ची नागरिक शिकायतें।",
+    step2Title: "चरण 2 — एआई संरचित निष्कर्षण",
+    step2Desc: "जेमिनी भाषा मॉडल असंरचित नागरिक आवाज/टेक्स्ट को संरचित नागरिक संस्थाओं में बदलता है।",
+    step3Title: "चरण 3 — हॉटस्पॉट निर्माण",
+    step3Desc: "कई शिकायतें जिले के बुनियादी ढांचा अंतर के साथ स्थानिक और श्रेणीबद्ध रूप से अभिसरित होती हैं।",
+    step4Title: "चरण 4 — दृढ़ गणितीय प्राथमिकता गणना",
+    step4Desc: "गणितीय सूत्र 5 पारदर्शी घटकों में आधिकारिक 0-100 स्कोर की गणना करता है।",
+    step5Title: "चरण 5 — सरकारी प्रतिक्रिया एवं कार्य योजना",
+    step5Desc: "प्रशासनिक डैशबोर्ड एआई-सहायक कार्य योजना के साथ समझाता है कि इस क्षेत्र को प्राथमिकता क्यों दी गई।",
+    nextStepBtn: "अगला चरण",
+    prevStepBtn: "पिछला चरण",
+    quickLaunchBtn: "त्वरित परिदृश्य शुरू करें",
+    syntheticDisclosure: "प्रोटोटाइप प्रदर्शन: डेमो कृत्रिम (सिंथेटिक) नागरिक शिकायतों और प्रदर्शन डेटा का उपयोग करता है। कोई वास्तविक सरकारी कार्य आदेश जारी नहीं किए जाते हैं।"
   }
 };
 
 export const categoryLabels: Record<string, Record<Language, string>> = {
   WATER_AND_SANITATION: {
     en: "Water & Sanitation",
-    hi: "पेयजल एवं स्वच्छता",
-    mr: "पाणीपुरवठा व स्वच्छता"
+    hi: "पेयजल एवं स्वच्छता"
   },
   ROADS_AND_TRANSPORT: {
     en: "Roads & Transport",
-    hi: "सड़क एवं परिवहन",
-    mr: "रस्ते व वाहतूक"
+    hi: "सड़क एवं परिवहन"
   },
   ELECTRICITY_AND_ENERGY: {
     en: "Electricity & Energy",
-    hi: "विद्युत एवं ऊर्जा",
-    mr: "वीज व ऊर्जा"
+    hi: "विद्युत एवं ऊर्जा"
   },
   HEALTHCARE: {
     en: "Healthcare",
-    hi: "स्वास्थ्य एवं चिकित्सा",
-    mr: "आरोग्य व वैद्यकीय"
+    hi: "स्वास्थ्य एवं चिकित्सा"
   },
   EDUCATION: {
     en: "Education",
-    hi: "शिक्षा एवं विद्यालय",
-    mr: "शिक्षण व शाळा"
+    hi: "शिक्षा एवं विद्यालय"
   },
   CIVIC_AMENITIES: {
     en: "Civic Amenities & Waste",
-    hi: "नागरिक सुविधाएं एवं कचरा",
-    mr: "नागरी सुविधा व सांडपाणी"
+    hi: "नागरिक सुविधाएं एवं कचरा"
   }
 };
+

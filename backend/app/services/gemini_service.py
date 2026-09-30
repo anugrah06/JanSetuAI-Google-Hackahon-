@@ -9,8 +9,8 @@ from app.services.geocoding_service import resolve_coordinates
 logger = logging.getLogger(__name__)
 
 EXTRACTION_SYSTEM_PROMPT = """
-You are an expert civic intelligence officer for the Government of India and State of Maharashtra.
-Your task is to analyze multilingual citizen voice and text feedback (submitted in Hindi, Marathi, Indian English, or mixed dialects) and extract structured civic needs.
+You are an expert civic intelligence officer for the Government of India.
+Your task is to analyze multilingual citizen voice and text feedback (submitted in Hindi, Indian English, or mixed dialects) and extract structured civic needs.
 
 CRITICAL INSTRUCTIONS:
 1. Extract the primary department category from:
@@ -86,29 +86,29 @@ async def extract_feedback_entities(text: str, language_hint: Optional[str] = No
 
 
 def _heuristic_extract(text: str, language_hint: Optional[str]) -> CitizenFeedbackExtraction:
-    """Rule-based extractor for Hindi/Marathi/English keywords when offline/no API key."""
+    """Rule-based extractor for Hindi/English keywords when offline/no API key."""
     t_lower = text.lower()
     
     # 1. Category Detection
     category = "CIVIC_AMENITIES"
     sub_issue = "Civic amenities and public infrastructure issue"
     
-    if any(k in t_lower for k in ["पाणी", "पाण्याचा", "विहीर", "टँकर", "नळ", "जल", "पानी", "पाइप", "water", "tanker", "borewell", "leakage", "pipeline"]):
+    if any(k in t_lower for k in ["पानी", "पाइप", "हैंडपंप", "नल", "जल", "टैंकर", "बोरवेल", "water", "tanker", "borewell", "leakage", "pipeline"]):
         category = "WATER_AND_SANITATION"
         sub_issue = "Potable water supply outage and pipeline disruption"
-    elif any(k in t_lower for k in ["रस्ता", "खड्डे", "घाटा", "पूल", "बस", "सड़क", "रास्ता", "पुल", "गड्ढे", "road", "pothole", "bridge", "highway", "traffic"]):
+    elif any(k in t_lower for k in ["सड़क", "रास्ता", "पुल", "गड्ढे", "हादसा", "धंस", "road", "pothole", "bridge", "highway", "traffic"]):
         category = "ROADS_AND_TRANSPORT"
         sub_issue = "Road surface deterioration and transit blockage"
-    elif any(k in t_lower for k in ["वीज", "लाईट", "ट्रान्सफॉर्मर", "बिजली", "करंट", "electricity", "power", "transformer", "feeder", "voltage"]):
+    elif any(k in t_lower for k in ["बिजली", "करंट", "कटौती", "ट्रांसफार्मर", "electricity", "power", "transformer", "feeder", "voltage"]):
         category = "ELECTRICITY_AND_ENERGY"
         sub_issue = "Power supply disruption and transformer failure"
-    elif any(k in t_lower for k in ["आरोग्य", "दवाखाना", "रुग्णवाहिका", "लस", "अस्पताल", "डॉक्टर", "दवा", "health", "hospital", "ambulance", "clinic"]):
+    elif any(k in t_lower for k in ["अस्पताल", "डॉक्टर", "दवा", "इलाज", "मरीज", "एम्बुलेंस", "स्वास्थ्य", "health", "hospital", "ambulance", "clinic"]):
         category = "HEALTHCARE"
         sub_issue = "Primary healthcare facility access and medical emergency"
-    elif any(k in t_lower for k in ["शाळा", "शिक्षण", "छत", "वर्ग", "स्कूल", "पढ़ाई", "school", "education", "classroom", "teacher"]):
+    elif any(k in t_lower for k in ["स्कूल", "पढ़ाई", "अध्यापक", "कक्षा", "छत", "school", "education", "classroom", "teacher"]):
         category = "EDUCATION"
         sub_issue = "Educational facility infrastructure repair"
-    elif any(k in t_lower for k in ["कचरा", "गटार", "ड्रेनेज", "घाण", "कूड़ा", "नाली", "garbage", "drainage", "sewage", "waste"]):
+    elif any(k in t_lower for k in ["कचरा", "कूड़ा", "नाली", "सफाई", "गंदगी", "सीवर", "ड्रेनेज", "garbage", "drainage", "sewage", "waste"]):
         category = "CIVIC_AMENITIES"
         sub_issue = "Drainage overflow and uncollected waste accumulation"
 
@@ -121,11 +121,11 @@ def _heuristic_extract(text: str, language_hint: Optional[str]) -> CitizenFeedba
         "beed": "Beed", "बीड": "Beed",
         "latur": "Latur", "लातूर": "Latur",
         "ratnagiri": "Ratnagiri", "रत्नागिरी": "Ratnagiri",
-        "chandrapur": "Chandrapur", "चंद्रपूर": "Chandrapur",
+        "chandrapur": "Chandrapur", "चंद्रपुर": "Chandrapur",
         "pune": "Pune", "पुणे": "Pune",
-        "nashik": "Nashik", "नाशिक": "Nashik",
-        "solapur": "Solapur", "सोलापूर": "Solapur",
-        "nagpur": "Nagpur", "नागपूर": "Nagpur"
+        "nashik": "Nashik", "नासिक": "Nashik",
+        "solapur": "Solapur", "सोलापुर": "Solapur",
+        "nagpur": "Nagpur", "नागपुर": "Nagpur"
     }
     for key, dist_name in district_map.items():
         if key in t_lower:
@@ -148,28 +148,28 @@ def _heuristic_extract(text: str, language_hint: Optional[str]) -> CitizenFeedba
     # 3. Severity & Urgency
     severity = 3
     urgency = "MEDIUM"
-    if any(k in t_lower for k in ["जीवघेणा", "तातकाळ", "मदत", "खतरा", "आपातकाल", "emergency", "danger", "critical", "dying", "urgent"]):
+    if any(k in t_lower for k in ["जानलेवा", "खतरा", "आपातकाल", "तुरंत", "emergency", "danger", "critical", "dying", "urgent"]):
         severity = 5
         urgency = "CRITICAL"
-    elif any(k in t_lower for k in ["आजारी", "खराब", "लवकर", "बंद", "severe", "serious", "disrupted", "accident"]):
+    elif any(k in t_lower for k in ["बीमार", "खराब", "जल्द", "बंद", "severe", "serious", "disrupted", "accident"]):
         severity = 4
         urgency = "HIGH"
 
     # Affected group
     affected = "Local residents and community members"
-    if any(k in t_lower for k in ["लहान मुले", "शाळकरी", "बच्चे", "school", "children", "students"]):
+    if any(k in t_lower for k in ["बच्चे", "छात्र", "school", "children", "students"]):
         affected = "School children and students"
-    elif any(k in t_lower for k in ["शेतकरी", "पिक", "किसान", "खेती", "farmers", "crop"]):
+    elif any(k in t_lower for k in ["किसान", "खेती", "फसल", "farmers", "crop"]):
         affected = "Smallholder agricultural farmers"
-    elif any(k in t_lower for k in ["महिला", "गरोदर", "women", "mothers"]):
+    elif any(k in t_lower for k in ["महिलाएं", "माताएं", "women", "mothers"]):
         affected = "Women and mothers fetching essential supplies"
-    elif any(k in t_lower for k in ["रुग्ण", "मरीज", "patient", "ambulance"]):
+    elif any(k in t_lower for k in ["मरीज", "रोगी", "patient", "ambulance"]):
         affected = "Emergency patients and healthcare seekers"
 
     # Language
-    detected_lang = language_hint or "mr"
-    if any(c in text for c in "अआईईउऊएऐओऔकखगघचछजझ"):
-        detected_lang = "mr" if ("आहे" in text or "नाही" in text or "झाले" in text) else "hi"
+    detected_lang = language_hint or "en"
+    if any(c in text for c in "अआईईउऊएऐओऔकखगघचछजझटठडढणतथदधनपफबभमयरलवशषसह"):
+        detected_lang = "hi"
     elif all(ord(c) < 128 for c in text):
         detected_lang = "en"
 

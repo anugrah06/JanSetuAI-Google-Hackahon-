@@ -8,11 +8,16 @@ from app.models.hotspot import Hotspot
 from app.schemas.hotspot import HotspotSummary, HotspotDetail, GovernmentStats
 from app.schemas.score_breakdown import ScoreBreakdown, FactorComponent, EvidenceCitation, ActionItem
 from app.services.clustering_service import cluster_and_calculate_hotspots
+from app.api.v1.auth import require_government_admin
+from app.models.user import User
 
 router = APIRouter(prefix="/gov", tags=["Government Intelligence & Dashboard"])
 
 @router.get("/stats", response_model=GovernmentStats)
-async def get_government_stats(db: AsyncSession = Depends(get_db)):
+async def get_government_stats(
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(require_government_admin)
+):
     """
     Returns aggregated KPIs for the executive government dashboard.
     """
@@ -63,7 +68,8 @@ async def list_hotspots(
     district: Optional[str] = None,
     category: Optional[str] = None,
     min_score: Optional[float] = Query(None, ge=0.0, le=100.0),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(require_government_admin)
 ):
     """
     Retrieves filtered infrastructure hotspots sorted by transparent priority score.
@@ -106,7 +112,8 @@ async def list_hotspots(
 @router.get("/hotspots/{hotspot_id}", response_model=HotspotDetail)
 async def get_hotspot_detail(
     hotspot_id: str,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(require_government_admin)
 ):
     """
     Returns deep-dive explainability details for a specific hotspot,
@@ -192,7 +199,10 @@ async def get_hotspot_detail(
 
 
 @router.post("/recalculate")
-async def trigger_recalculation(db: AsyncSession = Depends(get_db)):
+async def trigger_recalculation(
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(require_government_admin)
+):
     """
     Manually triggers re-clustering and deterministic score recalculation.
     """

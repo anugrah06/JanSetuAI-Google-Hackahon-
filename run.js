@@ -27,7 +27,7 @@ console.log(`[JanSetu] Using Python: ${pythonCmd}`);
 console.log("\x1b[32m%s\x1b[0m", "[Backend] Launching FastAPI on http://127.0.0.1:8000 ...");
 const backendProcess = spawn(
   pythonCmd,
-  ["-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", "8000"],
+  ["-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", "8000", "--reload"],
   {
     cwd: backendDir,
     stdio: ["ignore", "pipe", "pipe"],

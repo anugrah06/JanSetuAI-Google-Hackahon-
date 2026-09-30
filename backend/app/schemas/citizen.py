@@ -4,7 +4,7 @@ from datetime import datetime
 
 class CitizenTextInput(BaseModel):
     text: str
-    language: Optional[str] = "mr" # 'hi', 'mr', 'en'
+    language: Optional[str] = "en" # 'hi', 'en'
     user_location_hint: Optional[str] = None # e.g. "Beed, Ashti"
 
 class CitizenFeedbackResponse(BaseModel):
@@ -25,7 +25,7 @@ class CitizenFeedbackResponse(BaseModel):
     urgency: str
     affected_group: Optional[str] = None
     
-    is_synthetic: bool = True
+    is_synthetic: bool = False
     assigned_hotspot_id: Optional[str] = None
 
 class CitizenTicketStatus(BaseModel):
@@ -36,4 +36,4 @@ class CitizenTicketStatus(BaseModel):
     district: str
     created_at: datetime
     cluster_score: Optional[float] = None
-    is_synthetic: bool = True
+    is_synthetic: bool = False
