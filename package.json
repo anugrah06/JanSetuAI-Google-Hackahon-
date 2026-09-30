@@ -1,0 +1,21 @@
+{
+  "name": "jansetu-ai",
+  "version": "1.0.0",
+  "description": "Multilingual Citizen Voice-to-Needs Civic Intelligence & Infrastructure Prioritization Engine",
+  "private": true,
+  "scripts": {
+    "dev": "node run.js",
+    "start": "node run.js",
+    "backend": "cd backend && .\\venv\\Scripts\\uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload",
+    "frontend": "npm --prefix frontend run dev"
+  },
+  "keywords": [
+    "civic-intelligence",
+    "gemini",
+    "multilingual",
+    "governance",
+    "hackathon"
+  ],
+  "author": "JanSetu AI Team",
+  "license": "MIT"
+}
